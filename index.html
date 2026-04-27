@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>FocusAlok Pro</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;600&family=DM+Serif+Display&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <header>
+    <div class="header-left">
+      <div class="logo">Focus Alok <span>discipline system</span></div>
+
+      <button id="env-toggle-btn" onclick="toggleEnv()" class="env-btn">
+        DEV
+      </button>
+    </div>
+    <span id="quote-text">Loading...</span>
+    <div class="header-right">
+      <div class="clock-display" id="clock">--:--</div>
+      <div class="demo-toggle">
+        <button class="demo-btn on-time active" id="btn-on" onclick="setTimeMode('on')">On Time</button>
+        <button class="demo-btn off-time" id="btn-off" onclick="setTimeMode('off')">After Time</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+
+    <!-- LEFT: Calendar -->
+    <div class="calendar-panel">
+      <div class="month-nav">
+        <button class="nav-btn" onclick="changeMonth(-1)">‹</button>
+        <div class="month-label" id="month-label"></div>
+        <button class="nav-btn" onclick="changeMonth(1)">›</button>
+      </div>
+      <div class="weekdays">
+        <div class="weekday">SU</div>
+        <div class="weekday">MO</div>
+        <div class="weekday">TU</div>
+        <div class="weekday">WE</div>
+        <div class="weekday">TH</div>
+        <div class="weekday">FR</div>
+        <div class="weekday">SA</div>
+      </div>
+      <div class="calendar-grid" id="calendar-grid"></div>
+      <div class="streak-section">
+        <div class="streak-label">Discipline streak — last 28 days</div>
+        <div class="streak-grid" id="streak-grid"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Day Panel -->
+    <div class="day-panel">
+      <div id="day-content">
+
+        <div class="day-header">
+          <div>
+            <div class="day-title" id="day-title"></div>
+            <div class="day-subtitle" id="day-subtitle"></div>
+          </div>
+          <div class="time-window-badge" id="time-badge">
+            <div class="dot"></div>
+            <span id="time-badge-text"></span>
+          </div>
+        </div>
+
+        <div class="countdown" id="countdown"></div>
+
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-num" id="stat-total">0</div>
+            <div class="stat-label">Total</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num" id="stat-done">0</div>
+            <div class="stat-label">Done</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num" id="stat-pct">—</div>
+            <div class="stat-label">Focus Score</div>
+          </div>
+        </div>
+
+        <div class="progress-bar">
+          <div id="progress-fill"></div>
+        </div>
+
+        <div class="task-input-section">
+          <div class="task-input-wrap" id="input-wrap">
+            <input id="task-input" class="task-input" placeholder="Plan your day..." onkeydown="handleKey(event)">
+            <button class="add-btn" onclick="addTask()">+ Add</button>
+          </div>
+          <div class="locked-msg" id="locked-msg">Planning closed. You lost control today.</div>
+        </div>
+
+        <div class="section-label">Pending <span id="pending-count" class="count">0</span></div>
+        <div id="pending-list" class="task-list"></div>
+
+        <div class="section-label">Completed <span id="completed-count" class="count">0</span></div>
+        <div id="completed-list" class="task-list"></div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
