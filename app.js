@@ -361,28 +361,22 @@ async function loadQuote() {
 
   el.classList.remove('show');
 
-  setTimeout(async () => {
-    try {
-      const res = await fetch(
-        'https://api.allorigins.win/raw?url=https://zenquotes.io/api/random'
-      );
-      const data = await res.json();
+  try {
+    const res = await fetch('quotes.txt');
+    const text = await res.text();
+    const QUOTES = text.split('\n').filter(q => q.trim() !== '');
+    const index = Math.floor(Math.random() * QUOTES.length);
 
-      let text = data[0].q;
+    setTimeout(() => {
+      el.textContent = `"${QUOTES[index]}"`;
+      el.classList.add('show');
+    }, 300);
 
-      if (text.length > 70) {
-        text = text.slice(0, 70) + '...';
-      }
-
-      el.textContent = `"${text}"`;
-
-    } catch (err) {
-      console.error(err); // 👈 IMPORTANT (debug)
-      el.textContent = 'Motivational quote';
-    }
-
+  } catch (err) {
+    console.error(err);
+    el.textContent = '"Stay focused and never give up."';
     el.classList.add('show');
-  }, 300);
+  }
 }
 // ── Init ───────────────────────────────────────────────────────────────
 renderCalendar();
