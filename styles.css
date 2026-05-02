@@ -779,3 +779,179 @@ header:hover #quote-text {
   border-color: var(--red);
   background: var(--red-bg);
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   RESPONSIVE — Tablet  (768px – 1024px)
+═══════════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  header { padding: 14px 20px; gap: 10px; }
+  #quote-text { font-size: 13px; max-width: 34%; }
+  .logo { font-size: 18px; }
+  .logo span { display: none; }
+  .clock-display { font-size: 12px; padding: 5px 10px; }
+  .demo-btn { padding: 5px 10px; font-size: 11px; }
+  .main { grid-template-columns: 270px 1fr; }
+  .calendar-panel { padding: 20px 14px; }
+  .day-panel { padding: 24px 20px; }
+  .day-title { font-size: 26px; }
+  .stat-num { font-size: 24px; }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   RESPONSIVE — Mobile  (≤ 767px)
+   Full-screen calendar → tap day → full-screen task view
+═══════════════════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+
+  /* Header */
+  header {
+    padding: 12px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+  }
+  #quote-text { display: none; }
+  .logo { font-size: 16px; }
+  .logo span { display: none; }
+  .demo-toggle { display: none; }
+  .clock-display { font-size: 11px; padding: 4px 8px; }
+  .env-btn { padding: 5px 10px; font-size: 10px; }
+
+  /* ── Two-panel slide system ── */
+  .main {
+    display: block;           /* no grid */
+    position: relative;
+    overflow: hidden;         /* clip the sliding panel */
+    min-height: calc(100vh - 57px);
+  }
+
+  /* Calendar: always visible, full width */
+  .calendar-panel {
+    width: 100%;
+    border-right: none;
+    border-bottom: none;
+    padding: 16px 16px 24px;
+    position: relative;
+    z-index: 1;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity   0.35s ease;
+  }
+
+  /* Day panel: off-screen to the right by default */
+  .day-panel {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    min-height: 100%;
+    padding: 16px 16px 40px;
+    background: var(--bg);
+    z-index: 2;
+    transform: translateX(100%);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+  }
+
+  /* When a day is selected → slide in day panel, slide out calendar */
+  .main.show-day .calendar-panel {
+    transform: translateX(-30%);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .main.show-day .day-panel {
+    transform: translateX(0);
+  }
+
+  /* ── Back button ── */
+  .mobile-back-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: all 0.15s;
+  }
+  .mobile-back-btn:hover {
+    background: var(--bg4);
+    color: var(--text);
+  }
+
+  /* ── Calendar tweaks ── */
+  .month-nav { margin-bottom: 16px; }
+  .month-label { font-size: 18px; }
+  .nav-btn { width: 30px; height: 30px; }
+  .weekday { font-size: 10px; }
+  .cal-day { font-size: 13px; border-radius: 8px; }
+
+  /* Streak — horizontal scroll */
+  .streak-section { margin-top: 20px; padding-top: 16px; }
+  .streak-grid {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .streak-grid::-webkit-scrollbar { display: none; }
+  .streak-dot { flex-shrink: 0; width: 13px; height: 13px; }
+
+  /* ── Day panel content ── */
+  .day-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .day-title { font-size: 26px; letter-spacing: -0.5px; }
+  .day-subtitle { font-size: 12px; }
+  .time-window-badge { padding: 6px 12px; font-size: 11px; }
+  .countdown { font-size: 12px; margin-bottom: 12px; }
+
+  /* Stats */
+  .stats-row { gap: 8px; margin-bottom: 18px; }
+  .stat-card { padding: 12px 10px; }
+  .stat-num { font-size: 22px; }
+  .stat-label { font-size: 10px; letter-spacing: 0.5px; }
+
+  /* Input */
+  .task-input-section { margin-bottom: 22px; }
+  .task-input-wrap { padding: 3px 3px 3px 12px; }
+  .task-input { font-size: 14px; padding: 10px 0; }
+  .add-btn { padding: 10px 14px; font-size: 13px; }
+
+  /* Tasks — delete always visible on touch */
+  .task-item { padding: 12px; gap: 10px; }
+  .task-item:hover { transform: none; }
+  .task-delete { opacity: 1; }
+  .task-text { font-size: 13px; }
+  .task-time { display: none; }
+  .section-label { font-size: 10px; letter-spacing: 1px; }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   RESPONSIVE — Small phones (≤ 380px)
+═══════════════════════════════════════════════════════════════════ */
+@media (max-width: 380px) {
+  header { padding: 10px 12px; }
+  .logo { font-size: 14px; }
+  .day-title { font-size: 22px; }
+  .stat-num { font-size: 18px; }
+  .cal-day { font-size: 11px; }
+  .add-btn { padding: 10px; font-size: 12px; }
+}
+
+
+/* ── Hide back button on desktop/tablet ── */
+@media (min-width: 768px) {
+  .mobile-back-btn { display: none; }
+}

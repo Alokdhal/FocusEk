@@ -1,18 +1,14 @@
 // ── State ──────────────────────────────────────────────────────────────
+import { openDB, saveTasks, loadTasks } from './db.js';
 let currentYear = new Date().getFullYear();
 let currentMonth = new Date().getMonth();
 let selectedDate = null;
 let isOnTime = true;
 let allTasks = {}; // { 'YYYY-MM-DD': [{id, text, done, addedAt}] }
-let ENV_MODE = 'dev'; // 'dev' or 'prod'
-try {
-  const saved = localStorage.getItem('focusflow_tasks');
-  if (saved) allTasks = JSON.parse(saved);
-} catch (e) { }
+let ENV_MODE = localStorage.getItem('env_mode') || 'dev';
 
-function saveTasks() {
-  try { localStorage.setItem('focusflow_tasks', JSON.stringify(allTasks)); } catch (e) { }
-}
+await openDB();
+allTasks = await loadTasks();
 
 // ── Helpers ────────────────────────────────────────────────────────────
 const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -170,6 +166,11 @@ function selectDay(y, m, d) {
   renderCalendar();
   renderDay(selectedDate);
   document.getElementById('day-content').style.display = 'block';
+
+  // Mobile: slide to day panel view
+  if (window.innerWidth <= 767) {
+    document.querySelector('.main').classList.add('show-day');
+  }
 }
 
 // ── Day panel ──────────────────────────────────────────────────────────
@@ -255,7 +256,7 @@ function createTaskEl(task, key) {
 }
 
 // ── Task operations ────────────────────────────────────────────────────
-function addTask() {
+async function addTask() {
   if (ENV_MODE === 'prod' && !isOnTime) {
     const msg = document.getElementById('locked-msg');
     msg.classList.add('show');
@@ -282,7 +283,7 @@ function addTask() {
     addedAt: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
   });
 
-  saveTasks();
+  await saveTasks(allTasks);
   input.value = '';
   renderDay(selectedDate);
   renderCalendar();
@@ -293,20 +294,20 @@ function handleKey(e) {
   if (e.key === 'Enter') addTask();
 }
 
-function toggleTask(key, id) {
+async function toggleTask(key, id) {
   const task = (allTasks[key] || []).find(t => t.id === id);
   if (task) task.done = !task.done;
-  saveTasks();
+  await saveTasks(allTasks);
   renderDay(key);
   renderCalendar();
   renderStreak();
 
 }
 
-function deleteTask(key, id) {
+async function deleteTask(key, id) {
   if (!allTasks[key]) return;
   allTasks[key] = allTasks[key].filter(t => t.id !== id);
-  saveTasks();
+  await saveTasks(allTasks);
   renderDay(key);
   renderCalendar();
   renderStreak();
@@ -378,6 +379,12 @@ async function loadQuote() {
     el.classList.add('show');
   }
 }
+
+// ── Mobile back navigation ─────────────────────────────────────────────
+function goBack() {
+  document.querySelector('.main').classList.remove('show-day');
+}
+
 // ── Init ───────────────────────────────────────────────────────────────
 renderCalendar();
 renderStreak();
@@ -386,11 +393,16 @@ setInterval(loadQuote, 1000 * 60 * 10); // every 10 min
 const _today = new Date();
 selectDay(_today.getFullYear(), _today.getMonth(), _today.getDate());
 
-// Load saved ENV mode
-window.addEventListener('DOMContentLoaded', () => {
-  ENV_MODE = localStorage.getItem('env_mode') || 'dev';
-  setEnv(ENV_MODE);
-});
+// Apply saved ENV mode immediately
+setEnv(ENV_MODE);
+
+// ── Expose functions to global scope (required because app.js is a module) ──
+window.addTask = addTask;
+window.handleKey = handleKey;
+window.toggleEnv = toggleEnv;
+window.setTimeMode = setTimeMode;
+window.changeMonth = changeMonth;
+window.goBack      = goBack;
 document.getElementById('task-input').addEventListener('focus', () => {
   if (ENV_MODE === 'prod' && !isOnTime) {
     const msg = document.getElementById('locked-msg');
